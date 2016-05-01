@@ -5,18 +5,46 @@ var url = require('url');
 var article = require('./server/models/article-model');
 
 var server = http.createServer(function (request, response) {
-    var pathname = url.parse(request.url).pathname;
+     var pathname = url.parse(request.url).pathname;
 
-    if (pathname == '/') {
+        if (pathname == '/') {
 
-        article.find({}, function(err, articles) {
-            if (err) {
-                throw err;
-            }
+            article.find({}, function(err, article) {
+                if (err) {
+                    throw err;
+                }
 
-            var page = articles.reduce(function (response, item) {
-                return response + '<h3>' + '<a href='+ item.id +'>' + item.title + '</a>' + '</h3>' + '<p>' + item.summary + '</p>';
-            }, '');
+
+                var page = article.reduce(function (response, item) {
+
+                    var star = item.title;
+
+                    stars = star.split(" ");
+
+                    for(i = 0; i < stars.length; i++){
+                        if(stars[i].indexOf("Гродн") == -1){
+
+                        }
+                        else{
+
+                            var str1 = "";
+
+                            for(j = 0; j < stars[i].length; j++){
+                                str1 += "*";
+                            }
+                            stars[i] = str1;
+
+                        }
+                    }
+
+                    var st="";
+
+                    for(i = 0; i < stars.length; i++){
+                        st += stars[i] + " ";
+                    }
+
+                    return response + '<h3>' + '<a href='+ item.id +'>' + st + '</a>' + '</h3>' + '<p>' + item.summary + '</p>';
+                }, '');
 
             response.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
             response.end(page);
